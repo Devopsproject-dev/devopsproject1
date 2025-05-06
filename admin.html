@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <script>
+    if (localStorage.getItem("role") !== "admin") {
+      alert("Unauthorized. Please login as admin.");
+      window.location.href = "index.html";
+    }
+  </script>
+
+  <div class="container">
+    <h2>Welcome, Admin</h2>
+    <button onclick="logout()">Logout</button>
+
+    <h3>Created Courses</h3>
+    <ul id="courseList"></ul>
+
+    <!-- Add Course Form -->
+    <h3>Add a New Course</h3>
+    <form id="addCourseForm">
+      <input type="text" id="courseName" placeholder="Course Name" required />
+      <input type="number" id="courseCapacity" placeholder="Course Capacity" required />
+      <button type="submit">Add Course</button>
+    </form>
+
+    <h3>Enrolled Students</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Student Email</th>
+          <th>Course</th>
+        </tr>
+      </thead>
+      <tbody id="enrolledTable"></tbody>
+    </table>
+  </div>
+
+  <script>
+    function logout() {
+      localStorage.clear();
+      window.location.href = "index.html";
+    }
+
+    const courseList = document.getElementById("courseList");
+    const enrolledTable = document.getElementById("enrolledTable");
+
+    function getCourses() {
+      return JSON.parse(localStorage.getItem("courses") || "[]");
+    }
+
+    function saveCourses(courses) {
+      localStorage.setItem("courses", JSON.stringify(courses));
+    }
+
+    // Render course list
+    function renderCourseList() {
+      const courses = getCourses();
+      courseList.innerHTML = '';
+      courses.forEach(course => {
+        const li = document.createElement("li");
+        li.textContent = `${course.name} (Capacity: ${course.capacity})`;
+        courseList.appendChild(li);
+      });
+    }
+
+    // Dummy enrolled students
+    function renderEnrolledStudents() {
+      const enrollments = [
+        { studentEmail: "abc@student.com", courseName: "Maths" },
+        { studentEmail: "xyz@student.com", courseName: "Physics" }
+      ];
+
+      enrolledTable.innerHTML = '';
+      enrollments.forEach(enroll => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${enroll.studentEmail}</td>
+          <td>${enroll.courseName}</td>
+        `;
+        enrolledTable.appendChild(row);
+      });
+    }
+
+    // Handle course submission
+    document.getElementById("addCourseForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const courseCapacity = document.getElementById("courseCapacity").value;
+
+      if (courseName && courseCapacity) {
+        const courses = getCourses();
+        const newCourse = {
+          id: courses.length + 1,
+          name: courseName,
+          capacity: parseInt(courseCapacity)
+        };
+        courses.push(newCourse);
+        saveCourses(courses);
+        renderCourseList();
+        document.getElementById("courseName").value = '';
+        document.getElementById("courseCapacity").value = '';
+        alert("New course added successfully!");
+      }
+    });
+
+    renderCourseList();
+    renderEnrolledStudents();
+  </script>
+</body>
+</html>
