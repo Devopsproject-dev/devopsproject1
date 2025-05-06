@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Student Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <script>
+    if (localStorage.getItem("role") !== "student") {
+      alert("Unauthorized. Please login first.");
+      window.location.href = "index.html";
+    }
+  </script>
+
+  <div class="container">
+    <h2>Welcome, Student</h2>
+    <button onclick="logout()">Logout</button>
+
+    <h3>Available Courses</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Course</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="availableCourses"></tbody>
+    </table>
+  </div>
+
+  <script>
+    function logout() {
+      localStorage.clear();
+      window.location.href = "index.html";
+    }
+
+    // Load courses from localStorage
+    let courses = JSON.parse(localStorage.getItem("courses")) || [];
+
+    const courseTable = document.getElementById("availableCourses");
+    const studentEmail = localStorage.getItem("email");
+
+    function isAlreadyRegistered(courseId) {
+      const enrollments = JSON.parse(localStorage.getItem("enrollments")) || [];
+      return enrollments.some(e => e.studentEmail === studentEmail && e.courseId === courseId);
+    }
+
+    courses.forEach(course => {
+      const row = document.createElement("tr");
+      const isRegistered = isAlreadyRegistered(course.id);
+
+      row.innerHTML = `
+        <td>${course.name}</td>
+        <td>${isRegistered ? "Already Registered" : `<button onclick="register(${course.id})">Register</button>`}</td>
+      `;
+      courseTable.appendChild(row);
+    });
+
+    function register(courseId) {
+      let enrollments = JSON.parse(localStorage.getItem("enrollments")) || [];
+      if (!isAlreadyRegistered(courseId)) {
+        enrollments.push({ studentEmail, courseId });
+        localStorage.setItem("enrollments", JSON.stringify(enrollments));
+        alert("Registered successfully!");
+        location.reload();
+      } else {
+        alert("You have already registered for this course.");
+      }
+    }
+  </script>
+
+</body>
+</html>
