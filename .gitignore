@@ -1,0 +1,39 @@
+Ignore Python compiled files
+pycache/
+*.py[cod]
+*.pyo
+*.pyd
+
+Ignore environment files
+.env
+.venv/
+env/
+venv/
+
+VS Code settings
+.vscode/
+
+OS files
+.DS_Store
+Thumbs.db
+
+Ignore test coverage reports
+coverage/
+*.cover
+*.coverage
+htmlcov/
+
+Node modules (if any frontend tooling uses Node)
+node_modules/
+
+Logs and temporary files
+*.log
+*.tmp
+
+Build/Dist output folders
+dist/
+build/
+
+Ignore frontend preview bundles or zips
+*.zip
+*.bak
