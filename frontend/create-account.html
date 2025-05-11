@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Create Account</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h2>Create Account</h2>
+    <form id="createAccountForm">
+      <input type="text" id="newUsername" placeholder="Username" required />
+      <input type="password" id="newPassword" placeholder="Password" required />
+      <input type="password" id="confirmPassword" placeholder="Confirm Password" required />
+      <select id="newRole" required>
+        <option value="">Select Role</option>
+        <option value="admin">Admin</option>
+        <option value="student">Student</option>
+      </select>
+      <button type="submit">Create Account</button>
+    </form>
+
+    <p>Already have an account? <a href="login.html">Back to Login</a></p>
+  </div>
+
+  <script>
+    document.getElementById("createAccountForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const username = document.getElementById("newUsername").value;
+      const password = document.getElementById("newPassword").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
+      const role = document.getElementById("newRole").value;
+
+      if (password !== confirmPassword) {
+        alert("Passwords do not match!");
+        return;
+      }
+
+      if (localStorage.getItem("user_" + username)) {
+        alert("Username already exists. Please choose another one.");
+        return;
+      }
+
+      // Save user
+      localStorage.setItem("user_" + username, JSON.stringify({ password, role }));
+      alert("Account created successfully!");
+      window.location.href = "login.html";
+    });
+  </script>
+</body>
+</html>
